@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>100 Jobs of the Future</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
+</head>
+<body class="bg-gray-100 text-gray-900">
+
+  <header class="text-center py-10 bg-blue-600 text-white shadow-md">
+    <h1 class="text-4xl font-bold mb-2">100 Jobs of the Future</h1>
+    <p class="text-lg">Explore upcoming careers by category — interactive, searchable, and sortable.</p>
+  </header>
+
+  <main class="max-w-6xl mx-auto p-6">
+    <p class="mb-6 text-center text-gray-700">🔍 Use the search bar below to find a job or keyword.</p>
+
+    <input id="globalSearch" type="text" placeholder="Search for any job..." class="w-full p-3 mb-8 rounded-lg border border-gray-300 shadow-sm" />
+
+    <!-- Table Template -->
+    <section id="tables"></section>
+  </main>
+
+  <footer class="text-center py-6 text-gray-500 text-sm border-t mt-10">
+    © 2025 Future Careers Project — Designed for educational and research purposes.
+  </footer>
+
+  <script>
+    const jobCategories = {
+      "Artificial Intelligence & Data": [
+        ["AI Ethics Officer", "Ensures AI is developed and used transparently and fairly."],
+        ["Algorithm Bias Auditor", "Detects and corrects unfair bias in algorithms."],
+        ["Quantum Computing Specialist", "Builds quantum systems and algorithms to solve complex problems."],
+        ["Human-AI Interaction Specialist", "Improves how people and AI collaborate."],
+        ["Synthetic Data Developer", "Creates safe, artificial data to train AI models."],
+        ["AI Model Explainer", "Translates complex AI decisions into human language."],
+        ["Digital Twin Architect", "Builds virtual replicas of physical systems."],
+        ["AI Content Curator", "Filters and verifies AI-generated media."],
+        ["AI Compliance Officer", "Ensures organizations follow legal and regulatory AI standards."],
+        ["AI Governance Manager", "Develops policies for responsible AI use."]
+      ],
+      "Healthcare & Biotechnology": [
+        ["Genetic Wellness Coach", "Creates personalized health plans from DNA."],
+        ["Longevity Counselor", "Advises on extending healthy lifespan."],
+        ["Neural Interface Specialist", "Designs brain-computer communication tools."],
+        ["Digital Health Companion", "Provides hybrid AI-human support for patients."],
+        ["Personalized Medicine Designer", "Tailors treatments to individual genetics."],
+        ["Regenerative Tissue Engineer", "Develops lab-grown organs and tissues."],
+        ["Bioinformatics Curator", "Organizes genetic and medical data for research."],
+        ["Bioprinting Engineer", "Designs and operates 3D bioprinters to create artificial organs."],
+        ["Nanomedicine Researcher", "Develops nanotech solutions for medical applications."],
+        ["Healthcare Robotics Technician", "Maintains and operates robots for surgery, diagnostics, and care."]
+      ],
+      "Climate & Sustainability": [
+        ["Climate Adaptation Planner", "Designs strategies to handle climate change."],
+        ["Carbon Capture Technician", "Operates systems that remove CO₂ from the air."],
+        ["Circular Economy Designer", "Creates products with zero waste."],
+        ["Ocean Farming Specialist", "Develops sustainable sea-based farms."],
+        ["Rewilding Strategist", "Restores ecosystems to natural balance."],
+        ["Sustainable Materials Scientist", "Invents eco-friendly alternatives to plastics."],
+        ["Energy Transition Engineer", "Builds renewable energy infrastructure."],
+        ["Climate Migration Consultant", "Helps communities relocate from risk zones."],
+        ["Green Construction Supervisor", "Oversees eco-friendly building projects."],
+        ["Eco-Restoration Drone Operator", "Uses drones to replant and restore nature."]
+      ],
+      "Space & Exploration": [
+        ["Space Traffic Controller", "Manages satellite and spacecraft movements in Earth's orbit."],
+        ["Space Tourism Guide", "Leads travelers on off-world adventures."],
+        ["Mars Colonization Manager", "Plans and manages the logistics of building a Mars colony."],
+        ["Astrobiologist", "Searches for and studies possible life on other planets."],
+        ["Space Debris Removal Engineer", "Clears dangerous junk from orbit."],
+        ["Extraterrestrial Agriculture Specialist", "Develops farming systems for Mars or the Moon."],
+        ["Off-World Construction Engineer", "Builds infrastructure in low-gravity environments."],
+        ["Space Medicine Doctor", "Treats health issues in space environments."],
+        ["Interplanetary Communications Officer", "Manages communication systems across space."],
+        ["Zero-Gravity Entertainment Designer", "Creates games and shows for space."]
+      ],
+      "Society & Culture": [
+        ["VR Experience Curator", "Designs immersive virtual worlds."],
+        ["Metaverse Community Manager", "Oversees online virtual communities."],
+        ["Digital Grief Counselor", "Helps families manage AI legacies of loved ones."],
+        ["Cross-Cultural Futurist", "Advises on global cultural trends."],
+        ["Emerging Tech Ethics Professor", "Teaches about society’s relationship with technology."],
+        ["Memory Curation Specialist", "Preserves personal digital archives."],
+        ["Global Citizenship Educator", "Teaches skills for a connected world."],
+        ["Inclusion Data Analyst", "Tracks equity and diversity using data."],
+        ["Future of Families Consultant", "Advises on evolving family structures."],
+        ["Tech-Human Rights Advocate", "Protects rights in digital spaces."]
+      ],
+      "Food & Agriculture": [
+        ["Vertical Farming Operator", "Runs high-tech indoor farms."],
+        ["Lab-Grown Meat Technician", "Produces cultured meat for markets."],
+        ["Precision Agriculture Analyst", "Uses data to boost farm efficiency."],
+        ["Pollination Drone Specialist", "Programs drones to replace bees."],
+        ["Algae Farming Entrepreneur", "Builds businesses using algae-based products."],
+        ["Food Waste Strategist", "Reduces loss throughout supply chains."],
+        ["DNA-Based Nutritionist", "Designs diets based on genetic profiles."],
+        ["Agroecology Educator", "Teaches sustainable farming practices."],
+        ["Insect Protein Chef", "Prepares meals using alternative protein sources."],
+        ["Food Security Policy Designer", "Shapes laws for global food stability."]
+      ],
+      "Security & Risk": [
+        ["Cybersecurity Mesh Architect", "Builds flexible, layered cyber defenses."],
+        ["Quantum Cryptographer", "Protects data using quantum technology."],
+        ["Drone Defense Technician", "Develops anti-drone security systems."],
+        ["Deepfake Forensics Investigator", "Detects and analyzes manipulated media."],
+        ["Biohacking Risk Officer", "Manages risks from DIY biology."],
+        ["Disaster Simulation Designer", "Creates models and training for crisis response."],
+        ["Digital Identity Guardian", "Secures personal online identities."],
+        ["Infrastructure Resilience Planner", "Protects critical systems from disruption."],
+        ["VR Safety Regulator", "Ensures safety standards in virtual environments."],
+        ["Climate Risk Insurance Specialist", "Designs insurance for climate impacts."]
+      ],
+      "Education & Human Development": [
+        ["AI Learning Designer", "Creates personalized, AI-driven learning experiences."],
+        ["Lifelong Learning Coach", "Guides adults through continuous education."],
+        ["Digital Classroom Architect", "Builds next-generation online learning platforms."],
+        ["Future Literacy Trainer", "Teaches foresight and future thinking."],
+        ["Neurodiversity Specialist", "Designs inclusive workplaces and schools."],
+        ["Gamification Designer", "Uses game mechanics to enhance learning motivation."],
+        ["Micro-Credential Manager", "Oversees digital certification systems."],
+        ["Hybrid Homeschool Facilitator", "Blends digital and home-based learning."],
+        ["Digital Etiquette Mentor", "Coaches respectful online communication."],
+        ["Robotics Coordinator", "Oversees robotics equipment and training."]
+      ],
+      "Business & Economy": [
+        ["Chief Wellbeing Officer", "Implements strategies to boost employee health and happiness."],
+        ["Web3 Strategist", "Builds blockchain-based business models."],
+        ["Subscription Economy Analyst", "Studies pay-per-use and membership models."],
+        ["Reputation Economy Broker", "Manages personal and brand trust scores."],
+        ["Digital Currency Policy Analyst", "Shapes cryptocurrency and digital asset regulations."],
+        ["Autonomous Supply Chain Manager", "Oversees AI-driven logistics operations."],
+        ["Talent Futurist", "Predicts future workforce skills and trends."],
+        ["AI Business Translator", "Connects business needs with AI solutions."],
+        ["Virtual Influencer Agent", "Manages CGI or AI-generated influencers."],
+        ["Chief Automation Officer", "Oversees automation deployment and governance."]
+      ],
+      "Arts, Media & Lifestyle": [
+        ["Virtual Fashion Designer", "Creates clothing for digital and virtual spaces."],
+        ["Mixed Reality Performance Artist", "Blends live and virtual performances."],
+        ["Haptic Tech Designer", "Develops touch-simulation technology for gaming and training."],
+        ["AR Advertising Specialist", "Designs interactive campaigns using augmented reality."],
+        ["Neurocinema Developer", "Creates interactive films that adapt to viewers’ brainwaves."],
+        ["AI-Generated Art Curator", "Selects and presents AI-created works in galleries."],
+        ["Ethical Storytelling Consultant", "Ensures media narratives are fair and responsible."],
+        ["Neuroaesthetic Designer", "Designs environments that enhance creativity and focus."],
+        ["Digital Minimalism Advisor", "Helps people reduce digital overload."],
+        ["Futurist Content Creator", "Produces media exploring future trends."]
+      ]
+    };
+
+    const tablesDiv = document.getElementById("tables");
+
+    Object.entries(jobCategories).forEach(([category, jobs], index) => {
+      const id = `table-${index}`;
+      tablesDiv.innerHTML += `
+        <div class="mb-10 bg-white shadow-md rounded-lg overflow-hidden">
+          <button class="w-full text-left bg-blue-500 text-white px-5 py-3 font-semibold text-lg" onclick="toggleTable('${id}')">
+            ${category} ▼
+          </button>
+          <div id="${id}" class="p-4 hidden">
+            <table class="display w-full text-sm" id="dt-${index}">
+              <thead><tr><th>Job Title</th><th>Description</th></tr></thead>
+              <tbody>
+                ${jobs.map(j => `<tr><td>${j[0]}</td><td>${j[1]}</td></tr>`).join("")}
+              </tbody>
+            </table>
+          </div>
+        </div>`;
+    });
+
+    function toggleTable(id) {
+      const el = document.getElementById(id);
+      el.classList.toggle("hidden");
+    }
+
+    $(document).ready(function () {
+      Object.keys(jobCategories).forEach((_, index) => {
+        $(`#dt-${index}`).DataTable({
+          paging: false,
+          info: false,
+          searching: true
+        });
+      });
+
+      $("#globalSearch").on("keyup", function () {
+        const value = $(this).val().toLowerCase();
+        $("table").each(function () {
+          $(this).DataTable().search(value).draw();
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
